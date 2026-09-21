@@ -1,9 +1,12 @@
 import "dotenv/config";
+import { asyncHandler } from "./middlewares/asyncHandler.middleware";
 // import "./config/passport.config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { config } from "./config/app.config";
 import { HTTPSTATUS } from "./config/http.config";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
+import { BadRequestException } from "./utils/app-error";
 // import passport from "passport";
 
 const app = express();
@@ -22,15 +25,16 @@ app.use(
 
 app.get(
   "/",
-   (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    throw new BadRequestException("throwing async error");
     res.status(HTTPSTATUS.OK).json({
       message: "Hello Subscribe to the channel",
     });
-  }
+  })
 );
 
 
-
+app.use(errorHandler); //handles error
 
 app.listen(config.PORT, async () => {
   console.log(`Server listening on port ${config.PORT} in ${config.NODE_ENV}`);
