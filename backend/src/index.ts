@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import "dotenv/config";
 import { asyncHandler } from "./middlewares/asyncHandler.middleware";
 // import "./config/passport.config";
@@ -7,6 +8,7 @@ import { config } from "./config/app.config";
 import { HTTPSTATUS } from "./config/http.config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { BadRequestException } from "./utils/app-error";
+import { initializeDatabase } from "./database/database";
 // import passport from "passport";
 
 const app = express();
@@ -37,5 +39,6 @@ app.get(
 app.use(errorHandler); //handles error
 
 app.listen(config.PORT, async () => {
+    await initializeDatabase();
   console.log(`Server listening on port ${config.PORT} in ${config.NODE_ENV}`);
 });
