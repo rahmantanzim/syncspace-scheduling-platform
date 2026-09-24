@@ -1,3 +1,4 @@
+// what is enum? enum is a special "class" that represents a group of constants (unchangeable variables). 
 export const ErrorCodeEnum = {
   AUTH_USER_NOT_FOUND: "AUTH_USER_NOT_FOUND",
 
