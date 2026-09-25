@@ -1,8 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany, JoinColumn, OneToOne } from "typeorm";
 import { compareValue, hashValue } from "../../utils/bcrypt";
 import { Integration } from "./integrations.entity";
 import { Event } from "./events.entity";
 import { Meeting } from "./meetings.entity";
+import { Availability } from "./availability.entity";
 @Entity({ name: 'users' })
 export class User {
     @PrimaryGeneratedColumn("uuid") // This will generate a unique identifier for each user
@@ -36,6 +37,12 @@ export class User {
 
     @OneToMany(()=>Meeting, (meetings)=> meetings.user)
     meetings: Meeting[];
+
+    @OneToOne(()=>Availability, (availability)=> availability.user, {
+        cascade: true, // availability will be automatically persisted when the user is saved
+    })
+    @JoinColumn() // This decorator is used to specify that this side of the relationship owns the foreign key
+    availability: Availability;
 
     @CreateDateColumn()
     createdAt: Date;

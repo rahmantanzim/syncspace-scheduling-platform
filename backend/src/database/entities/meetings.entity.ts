@@ -8,7 +8,6 @@ import {
 } from "typeorm";
 import { User } from "./user.entity";
 import { Event } from "./events.entity";
-import { IntegrationAppTypeEnum } from "./integrations.entity";
 
 export enum MeetingStatus {
   SCHEDULED = "SCHEDULED",
@@ -19,12 +18,6 @@ export enum MeetingStatus {
 export class Meeting {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-
-  @ManyToOne(() => User, (user) => user.meetings)
-  user: User;
-
-  @ManyToOne(() => Event, (event) => event.meetings)
-  event: Event;
 
   @Column()
   guestName: string;
@@ -56,6 +49,12 @@ export class Meeting {
     default: MeetingStatus.SCHEDULED,
   })
   status: MeetingStatus;
+
+  @ManyToOne(() => User, (user) => user.meetings)
+  user: User;
+
+  @ManyToOne(() => Event, (event) => event.meetings)
+  event: Event;
 
   @CreateDateColumn()
   createdAt: Date;
