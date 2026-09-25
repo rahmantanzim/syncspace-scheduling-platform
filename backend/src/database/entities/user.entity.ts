@@ -2,6 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { compareValue, hashValue } from "../../utils/bcrypt";
 import { Integration } from "./integrations.entity";
 import { Event } from "./events.entity";
+import { Meeting } from "./meetings.entity";
 @Entity({ name: 'users' })
 export class User {
     @PrimaryGeneratedColumn("uuid") // This will generate a unique identifier for each user
@@ -32,6 +33,9 @@ export class User {
 
     @OneToMany(() => Event, (event) => event.user)
     events: Event[];
+
+    @OneToMany(()=>Meeting, (meetings)=> meetings.user)
+    meetings: Meeting[];
 
     @CreateDateColumn()
     createdAt: Date;

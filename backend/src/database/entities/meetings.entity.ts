@@ -1,8 +1,65 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
-import { Event } from './events.entity';
-@Entity({name: 'meetings'})
-export class Meeting{
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { User } from "./user.entity";
+import { Event } from "./events.entity";
+import { IntegrationAppTypeEnum } from "./integrations.entity";
 
-    @ManyToOne(()=>Event, (event)=> event.meetings)
-    event: Event;
+export enum MeetingStatus {
+  SCHEDULED = "SCHEDULED",
+  CANCELLED = "CANCELLED",
+}
+
+@Entity({ name: "meetings" })
+export class Meeting {
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @ManyToOne(() => User, (user) => user.meetings)
+  user: User;
+
+  @ManyToOne(() => Event, (event) => event.meetings)
+  event: Event;
+
+  @Column()
+  guestName: string;
+
+  @Column()
+  guestEmail: string;
+
+  @Column({ nullable: true })
+  additionalInfo: string;
+
+  @Column()
+  startTime: Date;
+
+  @Column()
+  endTime: Date;
+
+  @Column()
+  meetLink: string;
+
+  @Column()
+  calendarEventId: string;
+
+  @Column()
+  calendarAppType: string;
+
+  @Column({
+    type: "enum",
+    enum: MeetingStatus,
+    default: MeetingStatus.SCHEDULED,
+  })
+  status: MeetingStatus;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
