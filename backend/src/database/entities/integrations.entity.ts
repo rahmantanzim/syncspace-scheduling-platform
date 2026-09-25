@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./user.entity";
 
 // Enums for Integration Providers, App Types, and Categories
@@ -52,10 +52,10 @@ export class Integration {
 
     @Column({ nullable: false })
     userId: string;
-    @ManyToOne(() => User, (user) => user.integrations, {
-        onDelete: "CASCADE" // If a user is deleted, all their integrations will also be deleted
-    })
-    user: User; // this is the fetched user from the USER table. 
+    
+    @ManyToOne(() => User, (user) => user.integrations)
+    @JoinColumn({ name: "userId" })
+    user: User;
 
     @CreateDateColumn()
     createdAt: Date;

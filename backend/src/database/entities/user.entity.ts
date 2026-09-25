@@ -1,32 +1,37 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, OneToMany, JoinColumn } from "typeorm";
 import { compareValue, hashValue } from "../../utils/bcrypt";
 import { Integration } from "./integrations.entity";
-@Entity({name:'users'})
-export class User{
+import { Event } from "./events.entity";
+@Entity({ name: 'users' })
+export class User {
     @PrimaryGeneratedColumn("uuid") // This will generate a unique identifier for each user
-    id:string;
+    id: string;
 
-    @Column({nullable: false}) 
+    @Column({ nullable: false })
     name: string;
 
-    @Column({nullable: false, unique:true})
+    @Column({ nullable: false, unique: true })
     username: string;
-    
-    @Column({nullable: false, unique:true})
+
+    @Column({ nullable: false, unique: true })
     email: string;
 
-    @Column({nullable: false})
+    @Column({ nullable: false })
     password: string;
-    
-    @Column({nullable: true})
+
+    @Column({ nullable: true })
     imageUrl: string;
 
     //relationships with other entities can be defined here
 
     // User - Integration relationship: One user can have many integrations
-    @OneToMany(()=> Integration, (integration)=> integration.user)
-    @JoinColumn({ name: "userId" }) // This decorator is used to specify the column that will be used to join the two tables. In this case, it's the userId column in the Integration entity that will reference the id column in the User entity.
+    @OneToMany(() => Integration, (integration) => integration.user, {
+        cascade: true, // integration will be automatically persisted when the user is saved
+    })
     integrations: Integration[];
+
+    @OneToMany(() => Event, (event) => event.user)
+    events: Event[];
 
     @CreateDateColumn()
     createdAt: Date;
@@ -37,8 +42,8 @@ export class User{
     @BeforeInsert()
     @BeforeUpdate()
     // Security measure to hash the password before saving it to the database
-    async hashPassword(){
-        if(this.password){
+    async hashPassword() {
+        if (this.password) {
             this.password = await hashValue(this.password);
         }
     }
